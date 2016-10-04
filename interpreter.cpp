@@ -46,7 +46,7 @@
 
 Q_LOGGING_CATEGORY(MODERNUI_SCRIPT_INTERPRETER, "modernui.script.interpreter", QtWarningMsg)
 
-const Variable MAKI_NULLPTR = Variable::fromValue(static_cast<QObject *>(Q_NULLPTR));
+const Variable M_NULLPTR = Variable::fromValue(static_cast<QObject *>(Q_NULLPTR));
 
 Interpreter *Interpreter::m_instance = Q_NULLPTR;
 
@@ -60,7 +60,7 @@ Interpreter *Interpreter::instance()
 Interpreter::Interpreter(QObject *parent) : QObject(parent)
 {
     m_instance = this;
-    m_allocPool.reserve(64);
+    m_allocations.reserve(64);
 }
 
 const QMetaObject *Interpreter::metaObjectForGuid(const QUuid &guid)
@@ -127,11 +127,11 @@ void Interpreter::opEqual()
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tEQ: " << "arg2=" << *arg2 << " arg1=" << *arg1;
 
     ret.setValue(*arg2 == *arg1);
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     //m_retVal.setValue(*arg2 == *arg1);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t     ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
     //m_stack.push(&m_retVal);
 }
 
@@ -143,10 +143,10 @@ void Interpreter::opNotEqual()
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tNEQ: " << "arg2=" << *arg2 << " arg1=" << *arg1;
 
     ret.setValue(*arg2 != *arg1);
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t     ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opLess()
@@ -157,10 +157,10 @@ void Interpreter::opLess()
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tLE: " << "arg2=" << *arg2 << " arg1=" << *arg1;
 
     ret.setValue(*arg2 < *arg1);
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t    ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opLessEqual()
@@ -171,10 +171,10 @@ void Interpreter::opLessEqual()
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tLEQ: " << "arg2=" << *arg2 << " arg1=" << *arg1;
 
     ret.setValue(*arg2 <= *arg1);
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t     ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opGreater()
@@ -185,10 +185,10 @@ void Interpreter::opGreater()
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tGT: " << "arg2=" << *arg2 << " arg1=" << *arg1;
 
     ret.setValue(*arg2 > *arg1);
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t    ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opGreaterEqual()
@@ -199,10 +199,10 @@ void Interpreter::opGreaterEqual()
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tGTQ: " << "arg2=" << *arg2 << " arg1=" << *arg1;
 
     ret.setValue(*arg2 >= *arg1);
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t     ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opAdd()
@@ -216,10 +216,10 @@ void Interpreter::opAdd()
         ret.setValue(arg2->toString() + arg1->toString());
     else
         ret.setValue(arg2->toDouble() + arg1->toDouble());
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t     ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opSubtract()
@@ -230,10 +230,10 @@ void Interpreter::opSubtract()
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tSUB: " << "arg2=" << *arg2 << " arg1=" << *arg1;
 
     ret.setValue(arg2->toDouble() - arg1->toDouble());
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t     ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opMultiply()
@@ -244,10 +244,10 @@ void Interpreter::opMultiply()
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tMUL: " << "arg2=" << *arg2 << " arg1=" << *arg1;
 
     ret.setValue(arg2->toDouble() * arg1->toDouble());
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t      ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opDivide()
@@ -258,10 +258,10 @@ void Interpreter::opDivide()
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tDIV: " << "arg2=" << *arg2 << " arg1=" << *arg1;
 
     ret.setValue(arg2->toDouble() / arg1->toDouble());
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t      ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opModulus()
@@ -278,10 +278,10 @@ void Interpreter::opModulus()
     }
 
     ret.setValue(arg2->toInt() % arg1->toInt());
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t      ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opNot()
@@ -292,10 +292,10 @@ void Interpreter::opNot()
 
     bool res = arg->toBool();
     ret.setValue(!res);
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t      ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opLogAnd()
@@ -307,10 +307,10 @@ void Interpreter::opLogAnd()
 
     bool res = arg2->toBool() && arg1->toBool();
     ret.setValue(res);
-    m_allocPool.append(ret);
+    m_allocations.append(ret);
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t         ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opLogOr()
@@ -322,10 +322,10 @@ void Interpreter::opLogOr()
 
     bool res = arg2->toBool() || arg1->toBool();
     ret.setValue(res);
-    m_allocPool.append(ret);
-    mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t        ret=" << ret;
+    m_allocations.append(ret);
+    mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t       ret=" << ret;
 
-    m_stack.push(&m_allocPool.last());
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opMov()
@@ -351,19 +351,21 @@ void Interpreter::opNew(const QUuid &guid)
         return;
     }
 
-    Variable *var = new Variable();
-    var->setValue(obj);
-    mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tNEW: " << *var;
-    m_stack.push(var);
+    Variable var;
+    var.setValue(obj);
+    m_allocations.append(var);
+    mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tNEW: " << var;
+
+    m_stack.push(&m_allocations.last());
 }
 
 void Interpreter::opDelete()
 {
-    Variable *var = m_stack.pop();
+    Variable *var = m_stack.top();
     QObject *obj = var->value<QObject *>();
     mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tDELETE: " << *var;
     delete obj;
-    delete var;
+    *var = M_NULLPTR;
 }
 
 void Interpreter::opCall(Function *func)
@@ -388,14 +390,18 @@ void Interpreter::opCall(Function *func)
         case QMetaType::Int:
             ret.setValue(0);
             break;
+        case QMetaType::Float:
+        case QMetaType::Double:
+            ret.setValue(0.0);
+            break;
         case QMetaType::Bool:
             ret.setValue(false);
             break;
         case QMetaType::UnknownType:
-            ret = MAKI_NULLPTR;
+            ret = M_NULLPTR;
             break;
         default:
-            mCWarning(MODERNUI_SCRIPT_INTERPRETER) << "unsupported return type: " << method.returnType();
+            mCWarning(MODERNUI_SCRIPT_INTERPRETER) << "unsupported return type: " << method.typeName();
             return;
         }
         retval = QGenericReturnArgument(method.typeName(), ret.data());
@@ -403,9 +409,11 @@ void Interpreter::opCall(Function *func)
 
     const char *name;
     for (int i = 0; i < method.parameterCount() && !m_stack.isEmpty(); i++) {
+    //for (int i = method.parameterCount() - 1; i >= 0 && !m_stack.isEmpty(); i--) {
         name = method.parameterTypes().at(i).constData();
         Variable *var = m_stack.pop();
-        if (!var->convert(Variable::nameToType(name)))
+        if (static_cast<QMetaType::Type>(var->type()) != QMetaType::QObjectStar &&
+                !var->convert(Variable::nameToType(name)))
             mCWarning(MODERNUI_SCRIPT_INTERPRETER) << "failed to convert argument " << i << " to " << name;
         arguments[i] = QGenericArgument(name, var->constData());
     }
@@ -435,10 +443,23 @@ void Interpreter::opCall(Function *func)
     }
 
     if (method.returnType() == QMetaType::Void)
-        ret = MAKI_NULLPTR;
+        ret = M_NULLPTR;
 
-    m_allocPool.append(ret);
-    m_stack.push(&m_allocPool.last());
+    mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t      ret=" << ret;
+    m_allocations.append(ret);
+    m_stack.push(&m_allocations.last());
+}
+
+void Interpreter::checkProtectionBlock(QDataStream &stream)
+{
+    quint32 block = load32(stream);
+
+    if (block >= 0xffff0000) {
+        mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tPROTBLOCK: " << QString("0x%1").arg(block, 0, 16);
+        return;
+    }
+
+    stream.skipRawData(-4);
 }
 
 void Interpreter::exec(Callback *callback)
@@ -468,11 +489,11 @@ void Interpreter::exec(Callback *callback)
     stream.skipRawData(offset);
 
     while (1) {
-        quint8 inst = loadUint8(stream);
+        quint8 inst = load8(stream);
         switch (inst) {
         case INST_PUSH:
             {
-                quint32 number = loadUint32(stream);
+                quint32 number = load32(stream);
                 Variable *var = &variables[number];
                 mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tPUSH: " << number << " " << *var;
                 m_stack.push(var);
@@ -486,7 +507,7 @@ void Interpreter::exec(Callback *callback)
             break;
         case INST_POPTO:
             {                
-                quint32 number = loadUint32(stream);
+                quint32 number = load32(stream);
                 Variable *var = &variables[number];
                 mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tPOPTO: stacksize=" << m_stack.size() << " " << number << " " << *var;
                 *var = *m_stack.pop();
@@ -525,11 +546,11 @@ void Interpreter::exec(Callback *callback)
         case INST_JMPIF:
             {
                 // Jump on 'false'
-                quint32 to = loadUint32(stream);
+                qint32 to = load32(stream);
                 Variable *flag = m_stack.pop();
                 mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tJMPIF: " << *flag;
                 if (!flag->toBool()) {
-                    mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t       + " << to << " bytes";
+                    mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t       " << to << " bytes";
                     stream.skipRawData(to);
                 }
             }
@@ -537,36 +558,37 @@ void Interpreter::exec(Callback *callback)
         case INST_JMPIFNOT:
             {
                 // Jump on 'true'
-                quint32 to = loadUint32(stream);
+                qint32 to = load32(stream);
                 Variable *flag = m_stack.pop();
                 mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tJMPIFNOT: " << *flag;
                 if (flag->toBool()) {
-                    mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t          + " << to << " bytes";
+                    mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\t          " << to << " bytes";
                     stream.skipRawData(to);
                 }
             }
             break;
         case INST_JUMP:
             {
-                quint32 to = loadUint32(stream);
-                mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tJUMP: +" << to << " bytes";
+                qint32 to = load32(stream);
+                mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tJUMP: " << to << " bytes";
                 stream.skipRawData(to);
             }
             break;
         case INST_CALL:
             {
-                quint32 var_index = loadUint32(stream);
-                Function *func = script->function(var_index);
+                quint32 index = load32(stream);
+                Function *func = script->function(index);
                 if (func == Q_NULLPTR) {
-                    mCWarning(MODERNUI_SCRIPT_INTERPRETER) << "no function with index=" << var_index << " found";
+                    mCWarning(MODERNUI_SCRIPT_INTERPRETER) << "no function with index=" << index << " found";
                     break;
                 }
                 opCall(func);
+                checkProtectionBlock(stream);
             }
             break;
         case INST_CALL_LOC:
             {
-                quint32 offset = loadUint32(stream);
+                qint32 offset = load32(stream);
                 mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tCALL_LOC: offset=" << offset << " ret=" << stream.device()->pos();
                 m_returnOffsetStack.push(stream.device()->pos());
                 stream.skipRawData(offset);
@@ -579,8 +601,8 @@ void Interpreter::exec(Callback *callback)
                     quint32 offset = m_returnOffsetStack.pop();
                     stream.skipRawData(offset - stream.device()->pos());
                 } else {
-                    mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tRET: from callback (alloc=" << m_allocPool.size() << ")";
-                    m_allocPool.clear();
+                    mCDebug(MODERNUI_SCRIPT_INTERPRETER) << "\tRET: from callback (alloc=" << m_allocations.size() << ")";
+                    m_allocations.clear();
                     return;
                 }
             }
@@ -660,7 +682,7 @@ void Interpreter::exec(Callback *callback)
             }
         case INST_NEW:
             {
-                quint32 type_index = loadUint32(stream);
+                quint32 type_index = load32(stream);
                 const QUuid &guid = script->guid(type_index);
                 opNew(guid);
             }
@@ -672,10 +694,10 @@ void Interpreter::exec(Callback *callback)
             break;
         case INST_SCALL:
             {
-                quint32 var_index = loadUint32(stream);
-                Function *func = script->function(var_index);
+                quint32 index = load32(stream);
+                Function *func = script->function(index);
                 if (func == Q_NULLPTR) {
-                    mCWarning(MODERNUI_SCRIPT_INTERPRETER) << "no function with index=" << var_index << " found";
+                    mCWarning(MODERNUI_SCRIPT_INTERPRETER) << "no function with index=" << index << " found";
                     break;
                 }
                 opCall(func);
@@ -683,7 +705,7 @@ void Interpreter::exec(Callback *callback)
             }
             break;
         default:
-            qWarning("%s: unknown instruction code: %02x", Q_FUNC_INFO, inst);
+            qWarning("%s: %s: unknown instruction code: %02x", Q_FUNC_INFO, qUtf8Printable(script->id()), inst);
             return;
         }
     }
@@ -723,14 +745,20 @@ const QMap<QUuid, const QMetaObject *> Interpreter::m_metaObjects {
     {QUuid(0xb5baa535, 0x05b3, 0x4dcb, 0xad, 0xc1, 0xe6, 0x18, 0xd2, 0x8f, 0x68, 0x96), &TabSheet::staticMetaObject}};
 
 const QMap<QString, QString> Interpreter::m_methodNames {
-    // System
-    {"messagebox", "messageBox"},
+    // System  
+    {"messagebox", "messageBox"},    
     {"onplay", "playing"},
     {"onpause", "paused"},
     {"onstop", "stopped"},
     {"onresume", "resumed"},
+    {"seekto", "seek"},
+    {"getposition","position"},
+    {"getstatus", "status"},
+    {"getruntimeversion","runtimeVersion"},
     {"getscriptgroup", "scriptGroup"},
     {"getplayitemstring", "playItemString"},
+    {"getplayitemlength", "playItemLength"},
+    {"getplayitemmetadatastring", "playItemMetaDataString"},
     {"getvolume", "volume"},
     {"setvolume", "setVolume"},
     {"onvolumechanged", "volumeChanged"},
@@ -738,6 +766,8 @@ const QMap<QString, QString> Interpreter::m_methodNames {
     {"stringtointeger", "stringToint"},
     {"floattostring", "floatToString"},
     {"stringtofloat", "stringToFloat"},
+    {"integertotime", "intToTime"},
+    {"integertolongtime", "intToLongTime"},
 
     // GuiObject
     {"onmousemove", "mouseMoved"},
@@ -751,6 +781,9 @@ const QMap<QString, QString> Interpreter::m_methodNames {
 
     // Group
     {"getobject", "object"},
+
+    // Layer
+    {"setregion", "setRegion"},
 
     // Slider
     {"onpostedposition", "positionPosted"},
@@ -772,5 +805,9 @@ const QMap<QString, QString> Interpreter::m_methodNames {
     // Text
     {"getText", "text"},
     {"settext", "setText"},
-    {"setalternatetext", "setAlternateText"}
+    {"setalternatetext", "setAlternateText"},
+
+    // Region
+    {"loadfrommap", "loadFromMap"},
+    {"loadfrombitmap", "loadFromBitmap"},
 };

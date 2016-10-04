@@ -69,7 +69,7 @@ int Variable::addCallback(Callback *callback)
         return -1;
     }
 
-    if (*this == MAKI_NULLPTR) {
+    if (*this == M_NULLPTR) {
         //qDebug() << "added to pending" << callback->function()->name();
         m_pendingConnections.append(callback);
     } else {

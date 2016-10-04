@@ -39,3 +39,7 @@ int Map::value(int x, int y) const
     return qGray(m_image.pixel(x, y));
 }
 
+const QImage& Map::image() const
+{
+    return m_image;
+}

@@ -27,6 +27,8 @@ public:
     Q_INVOKABLE bool contains(int x, int y) const;
     Q_INVOKABLE int value(int x, int y) const;
 
+    const QImage &image() const;
+
 signals:
 
 public slots:

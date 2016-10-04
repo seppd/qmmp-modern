@@ -10,12 +10,11 @@
 #ifndef LAYER_H
 #define LAYER_H
 
-#include <QPair>
-#include <QRegion>
 #include <QXmlStreamAttributes>
 #include "guiobject.h"
 
 class Bitmap;
+class Region;
 
 #if 0
 // TODO:
@@ -40,9 +39,11 @@ public:
     QString image() const;
     void setImage(const QString &id);
 
-private:
-    QPair<QString, Bitmap *> m_image;
+    Q_INVOKABLE void setRegion(Region *region);
 
+private:
+    QString m_imageId;
+    Bitmap *m_bitmap;
 };
 
 #endif // LAYER_H

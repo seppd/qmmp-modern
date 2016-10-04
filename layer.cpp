@@ -11,6 +11,7 @@
 
 #include "layer.h"
 #include "bitmap.h"
+#include "region.h"
 #include "skin.h"
 
 #include <QDebug>
@@ -34,7 +35,7 @@ Layer::Layer(const QXmlStreamAttributes &attributes, QWidget *parent) : GuiObjec
 
 QString Layer::image() const
 {
-    return m_image.first;
+    return m_imageId;
 }
 
 void Layer::setImage(const QString &id)
@@ -45,8 +46,19 @@ void Layer::setImage(const QString &id)
         return;
     }
 
-    m_image = QPair<QString, Bitmap *>(id, b);
+    m_bitmap = b;
     if (w() == 0 || h() == 0)
         setFixedSize(b->pixmap().size());
     setPixmap(b->pixmap());
+}
+
+void Layer::setRegion(Region *region)
+{
+    QPixmap p = m_bitmap->pixmap();
+    QBitmap mask = QBitmap(p.size());
+    mask.fill(Qt::color0);
+    QPainter painter(&mask);
+    painter.drawPixmap(0, 0, region->mask());
+    p.setMask(mask);
+    setPixmap(p, false);
 }

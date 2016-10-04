@@ -25,25 +25,25 @@ class Callback;
 class Function;
 class QSignalMapper;
 
-extern const Variable MAKI_NULLPTR;
-//extern const QObject * const MAKI_NULLPTR;
+extern const Variable M_NULLPTR;
+//extern const QObject * const M_NULLPTR;
 //Q_DECLARE_METATYPE(const QObject *)
 
-inline quint8 loadUint8(QDataStream &stream)
+inline quint8 load8(QDataStream &stream)
 {
     quint8 u8;
     stream >> u8;
     return u8;
 }
 
-inline quint16 loadUint16(QDataStream &stream)
+inline quint16 load16(QDataStream &stream)
 {
     quint16 u16;
     stream >> u16;
     return u16;
 }
 
-inline quint32 loadUint32(QDataStream &stream)
+inline quint32 load32(QDataStream &stream)
 {
     quint32 u32;
     stream >> u32;
@@ -52,7 +52,7 @@ inline quint32 loadUint32(QDataStream &stream)
 
 inline QString loadString(QDataStream &stream)
 {
-    quint16 len = loadUint16(stream);
+    quint16 len = load16(stream);
     QByteArray bytes(len, 0);
     stream.readRawData(bytes.data(), len);
     return QString(bytes);
@@ -132,12 +132,14 @@ private:
     void opDelete();
     void opCall(Function *func);
 
+    void checkProtectionBlock(QDataStream &stream);
+
     static Interpreter *m_instance;
     const Script *m_curScript;
 
     QStack<Variable *> m_stack;
     QStack<quint32> m_returnOffsetStack;
-    QVector<Variable> m_allocPool;
+    QVector<Variable> m_allocations;
 
     static const QMap<QUuid, const QMetaObject *> m_metaObjects;
     static const QMap<QString, QString> m_methodNames;

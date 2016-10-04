@@ -11,18 +11,33 @@
 #define REGION_H
 
 #include <QObject>
+#include <QRegion>
+#include <QBitmap>
+#include <QRgb>
+
 #include "object.h"
+
+class Map;
 
 class Region : public QObject
 {
     Q_OBJECT
 public:
-    explicit Region(QObject *parent = 0);
+    Q_INVOKABLE explicit Region(QObject *parent = 0);
     ~Region() {}
+
+    QBitmap mask() const;
+    Q_INVOKABLE void loadFromMap(Map *map, int threshold, bool reversed);
+    Q_INVOKABLE void loadFromBitmap(const QString &id);
 
 signals:
 
 public slots:
+
+private:
+    static bool comparePixels(QRgb pixel1, QRgb pixel2);
+
+    QBitmap m_bitmap;
 };
 
 #endif // REGION_H

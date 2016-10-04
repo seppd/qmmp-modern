@@ -80,7 +80,7 @@ int Script::load()
     stream.setByteOrder(QDataStream::LittleEndian);
 
     // Check magic
-    quint16 magic = loadUint16(stream);
+    quint16 magic = load16(stream);
     if (magic != maki_magic) {
         qWarning("%s: %s: bad script magic", Q_FUNC_INFO, qUtf8Printable(m_file));
         return -1;
@@ -141,21 +141,21 @@ const QUuid Script::guid(quint32 index) const
 void Script::loadTypes(QDataStream &stream)
 {
     QUuid guid;
-    quint32 count = loadUint32(stream);
+    quint32 count = load32(stream);
 
     mCDebug(MODERNUI_SCRIPT_LOADER) << Q_FUNC_INFO;
     while (count--) {
-        uint l = loadUint32(stream);
-        ushort w1 = loadUint16(stream);
-        ushort w2 = loadUint16(stream);
-        uchar b1 = loadUint8(stream);
-        uchar b2 = loadUint8(stream);
-        uchar b3 = loadUint8(stream);
-        uchar b4 = loadUint8(stream);
-        uchar b5 = loadUint8(stream);
-        uchar b6 = loadUint8(stream);
-        uchar b7 = loadUint8(stream);
-        uchar b8 = loadUint8(stream);
+        uint l = load32(stream);
+        ushort w1 = load16(stream);
+        ushort w2 = load16(stream);
+        uchar b1 = load8(stream);
+        uchar b2 = load8(stream);
+        uchar b3 = load8(stream);
+        uchar b4 = load8(stream);
+        uchar b5 = load8(stream);
+        uchar b6 = load8(stream);
+        uchar b7 = load8(stream);
+        uchar b8 = load8(stream);
 
         guid = QUuid(l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8);
         mCDebug(MODERNUI_SCRIPT_LOADER) << "\t" << guid;
@@ -165,11 +165,11 @@ void Script::loadTypes(QDataStream &stream)
 
 int Script::loadFunctions(QDataStream &stream)
 {
-    quint32 count = loadUint32(stream);
+    quint32 count = load32(stream);
 
     mCDebug(MODERNUI_SCRIPT_LOADER) << Q_FUNC_INFO;
     while (count--) {
-        quint16 type_index = loadUint16(stream);
+        quint16 type_index = load16(stream);
 
         QUuid guid = m_guids.at(type_index & 0xff);
 
@@ -181,11 +181,11 @@ int Script::loadFunctions(QDataStream &stream)
         if (name != "onscriptloaded" && name != "onscriptunloading") {
             method = Interpreter::methodOfMakiFunction(guid, name);
             if (!method.isValid()) {
-                qWarning("%s: no method found for %s", Q_FUNC_INFO, qUtf8Printable(name));
+                qWarning("%s: %s: no method found for %s", Q_FUNC_INFO, qUtf8Printable(id()), qUtf8Printable(name));
                 return -1;
             }
         }
-        mCDebug(MODERNUI_SCRIPT_LOADER) << "\t" << name;
+        mCDebug(MODERNUI_SCRIPT_LOADER) << "\t" << m_functions.size() << " " << name;
         Function *func = new Function(name, guid, method, this);
         m_functions.append(func);
     }
@@ -195,20 +195,20 @@ int Script::loadFunctions(QDataStream &stream)
 
 int Script::loadVariables(QDataStream &stream)
 {
-    quint32 count = loadUint32(stream);
+    quint32 count = load32(stream);
 
     mCDebug(MODERNUI_SCRIPT_LOADER) << Q_FUNC_INFO;
     for (quint32 i = 0; i < count; i++) {
         Variable var;
-        quint8 type_index	= loadUint8(stream);
-        quint8 object = loadUint8(stream);
-        quint16 subclass = loadUint16(stream);
-        quint16 uint1 = loadUint16(stream);
-        quint16 uint2 = loadUint16(stream);
-        quint16 uint3 = loadUint16(stream);
-        quint16 uint4 = loadUint16(stream);
-        quint16 global = loadUint8(stream);
-        quint16 system = loadUint8(stream);
+        quint8 type_index	= load8(stream);
+        quint8 object = load8(stream);
+        quint16 subclass = load16(stream);
+        quint16 uint1 = load16(stream);
+        quint16 uint2 = load16(stream);
+        quint16 uint3 = load16(stream);
+        quint16 uint4 = load16(stream);
+        quint16 global = load8(stream);
+        quint16 system = load8(stream);
 
         if (object) {
             if (type_index >= m_guids.size()) {
@@ -233,13 +233,13 @@ int Script::loadVariables(QDataStream &stream)
                     var.setValue(m_system);
                     var.setConstant();
                 } else {
-                    var = MAKI_NULLPTR;
+                    var = M_NULLPTR;
                 }
             } else if (type_name == "Config") {
 
 
             } else {
-                var = MAKI_NULLPTR;
+                var = M_NULLPTR;
             }
         } else if (subclass) {
             Q_UNIMPLEMENTED();
@@ -261,7 +261,7 @@ int Script::loadVariables(QDataStream &stream)
 
             /* Special: this is NULL */
             if ((i == 1) && (type_id == QMetaType::Int)) {
-                var = MAKI_NULLPTR;
+                var = M_NULLPTR;
                 var.setConstant();
             }
         }
@@ -273,11 +273,11 @@ int Script::loadVariables(QDataStream &stream)
 
 int Script::loadConstants(QDataStream &stream)
 {
-    quint32 count = loadUint32(stream);
+    quint32 count = load32(stream);
 
     mCDebug(MODERNUI_SCRIPT_LOADER) << Q_FUNC_INFO;
     while (count--) {
-        quint32 var_num = loadUint32(stream);
+        quint32 var_num = load32(stream);
         int type_id = m_variables.at(var_num).userType();
         if (type_id == QMetaType::QString) {
             m_variables[var_num].setValue(loadString(stream));
@@ -294,13 +294,13 @@ int Script::loadConstants(QDataStream &stream)
 
 int Script::loadCallbacks(QDataStream &stream)
 {
-    quint32 count = loadUint32(stream);
+    quint32 count = load32(stream);
 
     mCDebug(MODERNUI_SCRIPT_LOADER) << Q_FUNC_INFO;
     while (count--) {
-        quint32 var_num = loadUint32(stream);
-        quint32 func_num = loadUint32(stream);
-        quint32 offset = loadUint32(stream);
+        quint32 var_num = load32(stream);
+        quint32 func_num = load32(stream);
+        quint32 offset = load32(stream);
 
         if (var_num >= static_cast<quint32>(m_variables.size())) {
             qWarning("%s: wrong variable nuber code", Q_FUNC_INFO);
@@ -333,7 +333,7 @@ int Script::loadCallbacks(QDataStream &stream)
 
 int Script::loadCode(QDataStream &stream)
 {
-    quint32 code_length = loadUint32(stream);
+    quint32 code_length = load32(stream);
     mCDebug(MODERNUI_SCRIPT_LOADER) << Q_FUNC_INFO << ": length=" << code_length;
     m_code.resize(code_length);
     int nread = stream.readRawData(m_code.data(), code_length);
