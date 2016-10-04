@@ -12,12 +12,15 @@
 
 #include <QObject>
 
+#include <qmmpui/metadataformatter.h>
+
 #include "object.h"
 #include "variable.h"
 
 class SoundCore;
 class MediaPlayer;
 class UiHelper;
+class PlayListManager;
 class Group;
 class Script;
 class Interpreter;
@@ -30,18 +33,66 @@ public:
     explicit System(QObject *parent = 0);
     ~System() {}
 
+    enum MetaDataType {
+        TITLE = 0,
+        ALBUM,
+        ARTIST,
+        ALBUMARTIST,
+        COMMENT,
+        YEAR,
+        COMPOSER,
+        GENRE,
+        TRACK,
+        DISC,
+        REPLAYGAIN_TRACK_GAIN,
+        REPLAYGAIN_ALBUM_GAIN,
+        REPLAYGAIN_TRACK_PEAK,
+        REPLAYGAIN_ALBUM_PEAK,
+        LENGTH,
+        BITRATE,        
+        // The following are not supported
+        SRATE,
+        STEREO,
+        VBR,
+        GAIN,
+        BPM,
+        CONDUCTOR,
+        KEY,
+        MOOD,
+        SUBTITLE,
+        LYRICIST,
+        ISRC,
+        MEDIA,
+        REMIXER,
+        ENCODER,
+        PUBLISHER,
+        TOOL,
+        PREGAP,
+        POSTGAP,
+        NUMSAMPLES,
+    };
+    Q_ENUM(MetaDataType)
+
     static System *instance();
 
     Q_INVOKABLE Group *scriptGroup() const;
     Q_INVOKABLE QString playItemString() const;
+    Q_INVOKABLE QString playItemMetaDataString(const QString &type) const;
+    Q_INVOKABLE int playItemLength() const;
     Q_INVOKABLE int messageBox(const QString &message, const QString &title, int flags, const QString &configEntry);
     Q_INVOKABLE int volume() const;
     Q_INVOKABLE void setVolume(int value);
+    Q_INVOKABLE void seek(int position);
+    Q_INVOKABLE int position() const;
+    Q_INVOKABLE double runtimeVersion() const;
+    Q_INVOKABLE int status() const;
 
     Q_INVOKABLE static QString intToString(int value);
     Q_INVOKABLE static int stringToint(const QString &number);
     Q_INVOKABLE static QString floatToString(float value, int precision);
     Q_INVOKABLE static float stringToFloat(const QString &number);
+    Q_INVOKABLE static QString intToLongTime(int value);
+    Q_INVOKABLE static QString intToTime(int value);
 
 signals:
     void playing();
@@ -69,11 +120,19 @@ private:
         PreviousFlag    = 0x40,
     };
 
+    enum Status {
+        Paused = -1,
+        Stopped,
+        Playing
+    };
+
     static System *m_instance;
     SoundCore *m_core;
     MediaPlayer *m_player;
     UiHelper *m_uiHelper;
+    PlayListManager *m_plManager;
     Interpreter *m_interpreter;
+    MetaDataFormatter m_formatter;
 };
 
 #endif // SYSTEM_H
