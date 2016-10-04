@@ -282,7 +282,6 @@ void Button::mouseReleaseEvent(QMouseEvent *event)
 
 void Button::mouseMoveEvent(QMouseEvent *event)
 {
-    QPixmap p;
     if (mask().contains(event->pos()))
         setPressed(true);
     else
