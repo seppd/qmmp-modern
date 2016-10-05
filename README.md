@@ -31,7 +31,7 @@ The latter is the only option to switch back to "skinned" plugin for now.
 - MAKI script loader
 - MAKI bytecode interpreter
 
-One can try [this skin](https://www.dropbox.com/s/y68d07fcd0gsubq/Tutorial.wal?dl=0) to see what has been implemented so far.
+One can try [this skin](https://www.dropbox.com/s/6x3xwimij5giasb/Tutorial2.wal?dl=0) to see what has been implemented so far.
 
 ### Debug
 `QT_LOGGING_RULES="modernui.xml.parser.debug=true" qmmp` enables skin xml parser debug
