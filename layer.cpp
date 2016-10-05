@@ -40,7 +40,7 @@ QString Layer::image() const
 
 void Layer::setImage(const QString &id)
 {
-    Bitmap *b = Skin::instance()->bitmap(id);
+    Bitmap *b = Skin::instance()->bitmap(id.toLower());
     if (b == Q_NULLPTR) {
         qWarning("%s: no '%s' bitmap found", Q_FUNC_INFO, qUtf8Printable(id));
         return;

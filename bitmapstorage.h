@@ -30,11 +30,12 @@ public:
 
     int addBitmap(T element, const QString &id)
     {
-        Bitmap *b = Skin::instance()->bitmap(id);
+        QString lid = id.toLower();
+        Bitmap *b = Skin::instance()->bitmap(lid);
         if (b == Q_NULLPTR)
             return -1;
 
-        m_ids[element] = id;
+        m_ids[element] = lid;
         m_pixmaps[element] = b->pixmap();
         return 0;
     }

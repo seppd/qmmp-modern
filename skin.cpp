@@ -265,7 +265,7 @@ void Skin::readAnimatedLayer(QXmlStreamReader &xml)
 void Skin::readBitmap(QXmlStreamReader &xml)
 {
     QXmlStreamAttributes attributes = xml.attributes();
-    QString id = attributes.value("id").toString();
+    QString id = attributes.value("id").toString().toLower();
 
     Bitmap *bm = new Bitmap(attributes, this);
     mCDebug(MODERNUI_XML_PARSER) << "\t" << bm;
