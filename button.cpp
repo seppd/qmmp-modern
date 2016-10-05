@@ -9,11 +9,13 @@
 
 #include <QPainter>
 #include <QMouseEvent>
+
 #include "button.h"
 #include "bitmap.h"
 #include "bitmapstorage.h"
 #include "skin.h"
 #include "system.h"
+#include "container.h"
 
 #include <QDebug>
 #include <QApplication> // Temp
@@ -143,6 +145,22 @@ void Button::setAction(Action action)
     case CB_NEXT:
         break;
     case SWITCH:
+        connect(this, &Button::clicked, [this]() {
+            QObject *p = this->parent();
+            while (p != Q_NULLPTR) {
+                Container *c = qobject_cast<Container *>(p);
+                if (c != Q_NULLPTR) {
+                    m_container = c;
+                    break;
+                }
+                p = p->parent();
+            }
+            if (m_container == Q_NULLPTR) {
+                qWarning("%s: failed to find parent Container", Q_FUNC_INFO);
+                return;
+            }
+            m_container->setLayout(m_param);
+        });
         break;
     case TOGGLE:
         break;

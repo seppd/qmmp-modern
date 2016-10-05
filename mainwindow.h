@@ -32,7 +32,7 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    //void showUi();
+    void setContainer(Container *container);
 
 public slots:
     void toggleVisibility();
@@ -53,7 +53,7 @@ private:
 
     Skin *m_skin;
     System *m_system;
-    Container *m_container;
+    //Container *m_container;
     Interpreter *m_interpreter;
     UiHelper *m_uiHelper;
     QmmpUiSettings *m_uiSettings;

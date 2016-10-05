@@ -23,4 +23,6 @@ Layout::Layout(const QXmlStreamAttributes &attributes, QWidget *parent) : Group(
             qWarning("%s: failed to set '%s' to '%s'", Q_FUNC_INFO, qUtf8Printable(name), qUtf8Printable(value));
         }
     }
+
+    hide();
 }

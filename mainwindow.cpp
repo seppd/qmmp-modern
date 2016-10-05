@@ -42,8 +42,6 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug("MainWindow: detected wm: %s", qPrintable(WindowSystem::netWindowManagerName()));
 #endif
 
-    m_container = Q_NULLPTR;
-
 #if 1
 #ifdef QMMP_WS_X11
     if (WindowSystem::netWindowManagerName().contains("Marco", Qt::CaseInsensitive) ||
@@ -88,12 +86,16 @@ MainWindow::~MainWindow()
 
 }
 
-#if 0
-void MainWindow::showUi()
+void MainWindow::setContainer(Container *container)
 {
-    m_container->show();
+    if (container == Q_NULLPTR)
+        return;
+
+    setFixedSize(container->size());
+    setMask(container->mask());
+    setCentralWidget(container);
+    container->setFocus();
 }
-#endif
 
 void MainWindow::toggleVisibility()
 {

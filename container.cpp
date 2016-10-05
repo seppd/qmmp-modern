@@ -12,6 +12,7 @@
 #include "container.h"
 #include "layout.h"
 #include "skin.h"
+#include "mainwindow.h"
 
 #include <QDebug>
 
@@ -65,13 +66,22 @@ Layout *Container::layout() const
 
 int Container::setLayout(const QString &id)
 {
-    Layout *lo = findChild<Layout *>(id);
+    Layout *lo = findChild<Layout *>(id.toLower());
     if (lo == Q_NULLPTR)
         return -1;
+
+    if (m_layout != Q_NULLPTR)
+        m_layout->hide();
     m_layout = lo;
-    //setFixedSize(lo->size());
-    //qDebug() << this << lo->mask();
     setMask(lo->mask());
+    lo->show();
+    adjustSize();
+
+    if (this->id() == "main") {
+        MainWindow *mw = qobject_cast<MainWindow *>(this->parent());
+        mw->setContainer(this);
+    }
+
     return 0;
 }
 

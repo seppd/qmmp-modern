@@ -17,6 +17,7 @@
 
 class Bitmap;
 class System;
+class Container;
 
 template <typename T>
 class BitmapStorage;
@@ -40,6 +41,7 @@ class Button : public GuiObject
     Q_PROPERTY(QString downimage READ downImage WRITE setDownImage)
     Q_PROPERTY(QString hoverimage READ hoverImage WRITE setHoverImage)
     Q_PROPERTY(Action action MEMBER m_action WRITE setAction)
+    Q_PROPERTY(QString param MEMBER m_param)
 
 public:
     explicit Button(QWidget *parent = 0);
@@ -141,6 +143,8 @@ private:
     BitmapStorage<ButtonElement> *m_storage = Q_NULLPTR;
     bool m_pressed = false;
     bool m_hovered = false;
+    QString m_param;
+    Container *m_container = Q_NULLPTR;
 
 #if 0
     void actionPrev();

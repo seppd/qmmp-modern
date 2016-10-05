@@ -139,17 +139,14 @@ void Skin::showUi()
         if (c->defaultVisible()/* && c != main*/) {
             qInfo() << c->parent() << c->objectName() << c->windowFlags();
             c->setLayout("normal");
-            c->adjustSize();
+            //c->adjustSize();
             c->show();
             c->raise();
             c->activateWindow();
         }
     }
 
-    m_mw->setFixedSize(main->size());
-    m_mw->setMask(main->mask());
-    m_mw->setCentralWidget(main);
-    main->setFocus();
+    m_mw->setContainer(main);
 }
 
 void Skin::readXmlObjects(QXmlStreamReader &xml)
