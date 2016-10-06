@@ -60,22 +60,22 @@ void Button::setAction(Action action)
     disconnect();
     switch (action) {
     case PREV:
-        connect(this, SIGNAL(clicked()), m_system, SLOT(previous()));
+        connect(this, SIGNAL(leftButtonClicked()), m_system, SLOT(previous()));
         break;
     case PLAY:
-        connect(this, SIGNAL(clicked()), m_system, SLOT(play()));
+        connect(this, SIGNAL(leftButtonClicked()), m_system, SLOT(play()));
         break;
     case PAUSE:
-        connect(this, SIGNAL(clicked()), m_system, SLOT(pause()));
+        connect(this, SIGNAL(leftButtonClicked()), m_system, SLOT(pause()));
         break;
     case STOP:
-        connect(this, SIGNAL(clicked()), m_system, SLOT(stop()));
+        connect(this, SIGNAL(leftButtonClicked()), m_system, SLOT(stop()));
         break;
     case NEXT:
-        connect(this, SIGNAL(clicked()), m_system, SLOT(next()));
+        connect(this, SIGNAL(leftButtonClicked()), m_system, SLOT(next()));
         break;
     case EJECT:
-        connect(this, SIGNAL(clicked()), m_system, SLOT(eject()));
+        connect(this, SIGNAL(leftButtonClicked()), m_system, SLOT(eject()));
         break;
     case EJECT_URL:
         break;
@@ -101,7 +101,7 @@ void Button::setAction(Action action)
         break;
     case CLOSE:
         // Temp
-        connect(this, SIGNAL(clicked()), window(), SLOT(close()));
+        connect(this, SIGNAL(leftButtonClicked()), window(), SLOT(close()));
         //connect(this, SIGNAL(clicked()), qApp, SLOT(quit()));
         //connect(this, SIGNAL(clicked()), qobject_cast<QWidget *>(Skin::instance()->parentWidget()), SLOT(close()));
         break;
@@ -146,7 +146,7 @@ void Button::setAction(Action action)
     case CB_NEXT:
         break;
     case SWITCH:
-        connect(this, &Button::clicked, [this]() {
+        connect(this, &Button::leftButtonClicked, [this]() {
             QObject *p = this->parent();
             while (p != Q_NULLPTR) {
                 Container *c = qobject_cast<Container *>(p);
@@ -305,8 +305,12 @@ void Button::mouseReleaseEvent(QMouseEvent *event)
 
     setPressed(false);
 
-    if (mask().contains(event->pos()))
-        emit clicked();
+    if (mask().contains(event->pos())) {
+        if (event->button() == Qt::LeftButton)
+            emit leftButtonClicked();
+        else if (event->button() == Qt::RightButton)
+            emit rightButtonClicked();
+    }
 
     GuiObject::mouseReleaseEvent(event);
 }

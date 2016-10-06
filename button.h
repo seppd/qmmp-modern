@@ -120,7 +120,8 @@ public:
     void setHoverImage(const QString &id);
 
 signals:
-    void clicked();
+    void leftButtonClicked();
+    void rightButtonClicked();
 
 protected:
     //void paintEvent(QPaintEvent *);

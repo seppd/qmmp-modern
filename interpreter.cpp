@@ -825,4 +825,6 @@ const QMap<QString, QString> Interpreter::m_methodNames {
     // Button
     {"leftclick", "leftClick"},
     {"rightclick", "rightClick"},
+    {"onleftclick", "leftButtonClicked"},
+    {"onrightclick", "rightButtonClicked"},
 };
