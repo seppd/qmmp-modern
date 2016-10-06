@@ -247,6 +247,8 @@ signals:
     void leftButtonReleased(VariableList args);
     void rightButtonPressed(VariableList args);
     void rightButtonReleased(VariableList args);
+    void leftButtonDoubleClicked(VariableList args);
+    void rightButtonDoubleClicked(VariableList args);
     void entered();
     void leaved();
 
@@ -256,9 +258,8 @@ protected:
     virtual void leaveEvent(QEvent *);
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void mouseDoubleClickEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
-    //void childEvent(QChildEvent *event);
-    //void customEvent(QEvent *event);
 
 private:
     QPixmap m_pixmap;

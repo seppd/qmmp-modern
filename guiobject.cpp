@@ -52,8 +52,6 @@ void GuiObject::paintEvent(QPaintEvent *)
 
 void GuiObject::mousePressEvent(QMouseEvent *event)
 {
-    //qDebug() << Q_FUNC_INFO << this;
-
     if (event->button() == Qt::LeftButton) {
         if (m_moveFlag)
             m_pos = mapTo(window(), event->pos());
@@ -67,18 +65,22 @@ void GuiObject::mousePressEvent(QMouseEvent *event)
 
 void GuiObject::mouseReleaseEvent(QMouseEvent *event)
 {
-    //qDebug() << Q_FUNC_INFO << this;
-
     if (event->button() == Qt::LeftButton)
         emit leftButtonReleased(VariableList({event->globalX(), event->globalY()}));
     else if (event->button() == Qt::RightButton)
         emit rightButtonReleased(VariableList({event->globalX(), event->globalY()}));
 }
 
+void GuiObject::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+        leftButtonDoubleClicked(VariableList({event->globalX(), event->globalY()}));
+    else if (event->button() == Qt::RightButton)
+        rightButtonDoubleClicked(VariableList({event->globalX(), event->globalY()}));
+}
+
 void GuiObject::mouseMoveEvent(QMouseEvent *event)
 {
-    //qDebug() << Q_FUNC_INFO << this;
-
     if (m_moveFlag)
         Dock::instance()->move(window(), event->globalPos() - m_pos);
 

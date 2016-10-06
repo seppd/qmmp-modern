@@ -409,7 +409,6 @@ void Interpreter::opCall(Function *func)
 
     const char *name;
     for (int i = 0; i < method.parameterCount() && !m_stack.isEmpty(); i++) {
-    //for (int i = method.parameterCount() - 1; i >= 0 && !m_stack.isEmpty(); i--) {
         name = method.parameterTypes().at(i).constData();
         Variable *var = m_stack.pop();
         if (static_cast<QMetaType::Type>(var->type()) != QMetaType::QObjectStar &&
@@ -782,6 +781,8 @@ const QMap<QString, QString> Interpreter::m_methodNames {
     {"onmousemove", "mouseMoved"},
     {"onleftbuttondown", "leftButtonPressed"},
     {"onleftbuttonup", "leftButtonReleased"},
+    {"onleftbuttondblclk", "leftButtonDoubleClicked"},
+    {"onrightbuttondblclk", "rightButtonDoubleClicked"},
     {"show", "show"},
     {"hide", "hide"},
     {"findobject", "findObject"},
