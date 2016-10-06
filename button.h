@@ -48,6 +48,9 @@ public:
     explicit Button(const QXmlStreamAttributes &attributes, QWidget *parent = 0);
     ~Button();
 
+    Q_INVOKABLE void leftClick();
+    Q_INVOKABLE void rightClick();
+
     enum Action {
         PREV = 0,
         PLAY,

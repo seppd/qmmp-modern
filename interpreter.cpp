@@ -818,4 +818,8 @@ const QMap<QString, QString> Interpreter::m_methodNames {
     // Region
     {"loadfrommap", "loadFromMap"},
     {"loadfrombitmap", "loadFromBitmap"},
+
+    // Button
+    {"leftclick", "leftClick"},
+    {"rightclick", "rightClick"},
 };

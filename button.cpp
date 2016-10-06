@@ -8,6 +8,7 @@
  */
 
 #include <QPainter>
+#include <QCursor>
 #include <QMouseEvent>
 
 #include "button.h"
@@ -272,6 +273,18 @@ void Button::setHovered(bool enable)
             setPixmap(p);
         m_hovered = false;
     }
+}
+
+void Button::leftClick()
+{
+    QMouseEvent event(QEvent::MouseButtonPress, mapFromGlobal(QCursor::pos()), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    GuiObject::mousePressEvent(&event);
+}
+
+void Button::rightClick()
+{
+    QMouseEvent event(QEvent::MouseButtonPress, mapFromGlobal(QCursor::pos()), Qt::RightButton, Qt::RightButton, Qt::NoModifier);
+    GuiObject::mousePressEvent(&event);
 }
 
 void Button::mousePressEvent(QMouseEvent *event)
