@@ -83,34 +83,34 @@ QString System::playItemMetaDataString(const QString &type) const
 
     switch (value) {
     case TITLE:
-        return m_core->metaData().value(Qmmp::TITLE);
+        return m_core->metaData(Qmmp::TITLE);
         break;
     case ALBUM:
-        return m_core->metaData().value(Qmmp::ALBUM);
+        return m_core->metaData(Qmmp::ALBUM);
         break;
     case ARTIST:
-        return m_core->metaData().value(Qmmp::ARTIST);
+        return m_core->metaData(Qmmp::ARTIST);
         break;
     case ALBUMARTIST:
-        return m_core->metaData().value(Qmmp::ALBUMARTIST);
+        return m_core->metaData(Qmmp::ALBUMARTIST);
         break;
     case COMMENT:
-        return m_core->metaData().value(Qmmp::COMMENT);
+        return m_core->metaData(Qmmp::COMMENT);
         break;
     case YEAR:
-        return m_core->metaData().value(Qmmp::YEAR);
+        return m_core->metaData(Qmmp::YEAR);
         break;
     case COMPOSER:
-        return m_core->metaData().value(Qmmp::COMPOSER);
+        return m_core->metaData(Qmmp::COMPOSER);
         break;
     case GENRE:
-        return m_core->metaData().value(Qmmp::GENRE);
+        return m_core->metaData(Qmmp::GENRE);
         break;
     case TRACK:
-        return m_core->metaData().value(Qmmp::TRACK);
+        return m_core->metaData(Qmmp::TRACK);
         break;
     case DISC:
-        return m_core->metaData().value(Qmmp::DISCNUMBER);
+        return m_core->metaData(Qmmp::DISCNUMBER);
         break;
     case REPLAYGAIN_TRACK_GAIN:
     case REPLAYGAIN_ALBUM_GAIN:
