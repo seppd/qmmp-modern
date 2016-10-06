@@ -17,6 +17,7 @@
 #include "object.h"
 #include "variable.h"
 
+class Skin;
 class SoundCore;
 class MediaPlayer;
 class UiHelper;
@@ -87,12 +88,20 @@ public:
     Q_INVOKABLE double runtimeVersion() const;
     Q_INVOKABLE int status() const;
 
-    Q_INVOKABLE static QString intToString(int value);
-    Q_INVOKABLE static int stringToint(const QString &number);
+    Q_INVOKABLE int privateInt(QString section, QString key, int defaultValue) const;
+    Q_INVOKABLE void setPrivateInt(QString section, QString key, int value);
+    Q_INVOKABLE QString privateString(QString section, QString key, QString defaultValue) const;
+    Q_INVOKABLE void setPrivateString(QString section, QString key, QString value);
+
+    Q_INVOKABLE static int stringLength(const QString &string);
+    Q_INVOKABLE static QString stringUpper(const QString &string);
+    Q_INVOKABLE static QString stringLower(const QString &string);
+    Q_INVOKABLE static QString integerToString(int value);
+    Q_INVOKABLE static int stringToInteger(const QString &number);
     Q_INVOKABLE static QString floatToString(float value, int precision);
     Q_INVOKABLE static float stringToFloat(const QString &number);
-    Q_INVOKABLE static QString intToLongTime(int value);
-    Q_INVOKABLE static QString intToTime(int value);
+    Q_INVOKABLE static QString integerToLongTime(int value);
+    Q_INVOKABLE static QString integerToTime(int value);
 
 signals:
     void playing();
@@ -127,6 +136,7 @@ private:
     };
 
     static System *m_instance;
+    Skin *m_skin;
     SoundCore *m_core;
     MediaPlayer *m_player;
     UiHelper *m_uiHelper;

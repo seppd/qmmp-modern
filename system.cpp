@@ -18,6 +18,7 @@
 #include "system.h"
 #include "group.h"
 #include "script.h"
+#include "skin.h"
 #include "interpreter.h"
 
 /* Maki runtime version, up to 5.01 = 0.0, 5.02+ = 1.0 */
@@ -35,6 +36,7 @@ System *System::instance()
 System::System(QObject *parent) : QObject(parent)
 {
     m_instance = this;
+    m_skin = Skin::instance();
     m_player = MediaPlayer::instance();
     m_core = SoundCore::instance();
     m_uiHelper = UiHelper::instance();
@@ -124,7 +126,6 @@ QString System::playItemMetaDataString(const QString &type) const
         break;
     case BITRATE:
         return QString::number(m_core->bitrate());
-        break;
         break;
     default:
         qWarning("%s: metadata of type '%s' is not supported", Q_FUNC_INFO, qUtf8Printable(type));
@@ -229,12 +230,57 @@ int System::status() const
     }
 }
 
-QString System::intToString(int value)
+int System::privateInt(QString section, QString key, int defaultValue) const
+{
+    QSettings settings(Qmmp::configFile(), QSettings::IniFormat);
+    QString entry = QString("Modern/skin_%1_%2_%3").arg(m_skin->skinInfo(Skin::Name)).arg(section).arg(key);
+    int i = settings.value(entry, defaultValue).toInt();
+    return i;
+}
+
+void System::setPrivateInt(QString section, QString key, int value)
+{
+    QSettings settings(Qmmp::configFile(), QSettings::IniFormat);
+    QString entry = QString("Modern/skin_%1_%2_%3").arg(m_skin->skinInfo(Skin::Name)).arg(section).arg(key);
+    settings.setValue(entry, value);
+}
+
+QString System::privateString(QString section, QString key, QString defaultValue) const
+{
+    QSettings settings(Qmmp::configFile(), QSettings::IniFormat);
+    QString entry = QString("Modern/skin_%1_%2_%3").arg(m_skin->skinInfo(Skin::Name)).arg(section).arg(key);
+    QString string = settings.value(entry, defaultValue).toString();
+    return string;
+}
+
+void System::setPrivateString(QString section, QString key, QString value)
+{
+    QSettings settings(Qmmp::configFile(), QSettings::IniFormat);
+    QString entry = QString("Modern/skin_%1_%2_%3").arg(m_skin->skinInfo(Skin::Name)).arg(section).arg(key);
+    settings.setValue(entry, value);
+}
+
+int System::stringLength(const QString &string)
+{
+    return string.length();
+}
+
+QString System::stringUpper(const QString &string)
+{
+    return string.toUpper();
+}
+
+QString System::stringLower(const QString &string)
+{
+    return string.toLower();
+}
+
+QString System::integerToString(int value)
 {
     return QString::number(value);
 }
 
-int System::stringToint(const QString &number)
+int System::stringToInteger(const QString &number)
 {
     return number.toInt();
 }
@@ -249,7 +295,7 @@ float System::stringToFloat(const QString &number)
     return number.toFloat();
 }
 
-QString System::intToLongTime(int value)
+QString System::integerToLongTime(int value)
 {
     QString time = MetaDataFormatter::formatLength(value / 1000, false);
     if (time.length() < 6)
@@ -257,7 +303,7 @@ QString System::intToLongTime(int value)
     return time;
 }
 
-QString System::intToTime(int value)
+QString System::integerToTime(int value)
 {
     QString time = MetaDataFormatter::formatLength(value / 1000, false);
     if (time.length() > 5)

@@ -74,8 +74,6 @@ void Skin::setSkin(const QString &path)
     QSettings settings(Qmmp::configFile(), QSettings::IniFormat);
     settings.setValue("Modern/skin_path", path);
 
-    //m_cur_container = 0;
-
     mCDebug(MODERNUI_XML_PARSER) << "path: " << path;
     QString skin_xml(m_skinDir.absolutePath() + "/skin.xml");
     QFile file(skin_xml);
@@ -91,7 +89,7 @@ void Skin::setSkin(const QString &path)
 
     QList<Script *>::Iterator i = m_scripts.begin();
     while (i != m_scripts.end()) {
-        if ((*i)->load()/*m_system->loadScript(*i)*/ == -1) {
+        if ((*i)->load() == -1) {
             delete *i;
             i = m_scripts.erase(i);
         } else {
@@ -103,6 +101,11 @@ void Skin::setSkin(const QString &path)
 QString Skin::skinPath() const
 {
     return m_skinDir.absolutePath();
+}
+
+QString Skin::skinInfo(SkinInfo key) const
+{
+    return m_skinInfo.value(key);
 }
 
 Container *Skin::container(const QString &id) const
@@ -132,14 +135,11 @@ void Skin::showUi()
     if (main == Q_NULLPTR)
         qFatal("%s: main container not found", Q_FUNC_INFO);
 
-    //qApp->processEvents();
-
     for (QString id : m_containers.keys()) {
         Container *c = m_containers.value(id);
-        if (c->defaultVisible()/* && c != main*/) {
+        if (c->defaultVisible()) {
             qInfo() << c->parent() << c->objectName() << c->windowFlags();
             c->setLayout("normal");
-            //c->adjustSize();
             c->show();
             c->raise();
             c->activateWindow();
@@ -186,9 +186,9 @@ void Skin::readSkinInfo(QXmlStreamReader &xml)
         if (xml.tokenType() == QXmlStreamReader::StartElement) {
             QString name = xml.name().toString();
 
-            if (isSkinInfoTag(name)) {
+            if (m_validSkinInfo.contains(name)) {
                 xml.readNext();
-                m_skinInfo.insert(name, xml.text().toString());
+                m_skinInfo.insert(m_validSkinInfo.value(name), xml.text().toString());
             }
         }
         xml.readNext();
@@ -228,7 +228,6 @@ void Skin::readContainer(QXmlStreamReader &xml)
 void Skin::readLayout(QXmlStreamReader &xml)
 {
     QXmlStreamAttributes attributes = xml.attributes();
-    //QString id = attributes.value("id").toString();
 
     Layout *lo = new Layout(attributes, m_curParent.top());
     mCDebug(MODERNUI_XML_PARSER) << "\t" << lo << " parent: " << m_curParent.top();
@@ -244,7 +243,6 @@ void Skin::readLayout(QXmlStreamReader &xml)
 void Skin::readLayer(QXmlStreamReader &xml)
 {
     QXmlStreamAttributes attributes = xml.attributes();
-    //QString id = attributes.value("id").toString();
 
     Layer *l = new Layer(attributes, m_curParent.top());
     mCDebug(MODERNUI_XML_PARSER) << "\t" << l << " parent: " << m_curParent.top();
@@ -253,7 +251,6 @@ void Skin::readLayer(QXmlStreamReader &xml)
 void Skin::readAnimatedLayer(QXmlStreamReader &xml)
 {
     QXmlStreamAttributes attributes = xml.attributes();
-    //QString id = attributes.value("id").toString();
 
     AnimatedLayer *al =  new AnimatedLayer(attributes, m_curParent.top());
     mCDebug(MODERNUI_XML_PARSER) << "\t" << al << " parent: " << m_curParent.top();
@@ -278,7 +275,6 @@ void Skin::readBitmapFont(QXmlStreamReader &xml)
     BitmapFont *bmf = new BitmapFont(attributes, this);
     mCDebug(MODERNUI_XML_PARSER) << "\t" << bmf;
     m_fonts.insert(id, bmf);
-    //ints.insert(id, bmf);
 }
 
 void Skin::readTrueTypeFont(QXmlStreamReader &xml)
@@ -289,13 +285,11 @@ void Skin::readTrueTypeFont(QXmlStreamReader &xml)
     TrueTypeFont *ttf = new TrueTypeFont(attributes, this);
     mCDebug(MODERNUI_XML_PARSER) << "\t" << ttf;
     m_fonts.insert(id, ttf);
-    //ints.insert(id, ttf);
 }
 
 void Skin::readButton(QXmlStreamReader &xml)
 {
     QXmlStreamAttributes attributes = xml.attributes();
-    //QString id = attributes.value("id").toString();
 
     // Does this matter?
     if (xml.namespaceUri() == "WasabiXML") {
@@ -309,7 +303,6 @@ void Skin::readButton(QXmlStreamReader &xml)
 void Skin::readToggleButton(QXmlStreamReader &xml)
 {
     QXmlStreamAttributes attributes = xml.attributes();
-    //QString id = attributes.value("id").toString();
 
     // Does this matter?
     if (xml.namespaceUri() == "WasabiXML") {
@@ -317,14 +310,12 @@ void Skin::readToggleButton(QXmlStreamReader &xml)
     } else {
         ToggleButton *tb = new ToggleButton(attributes, m_curParent.top());
         mCDebug(MODERNUI_XML_PARSER) << "\t" << tb << " parent: " << m_curParent.top();
-        //qDebug("%s: %p parent=%p", Q_FUNC_INFO, b, b->parent());
     }
 }
 
 void Skin::readSlider(QXmlStreamReader &xml)
 {
     QXmlStreamAttributes attributes = xml.attributes();
-    //QString id = attributes.value("id").toString();
 
     Slider *s = new Slider(attributes, m_curParent.top());
     mCDebug(MODERNUI_XML_PARSER) << "\t" << s << " parent: " << m_curParent.top();
@@ -398,7 +389,6 @@ void Skin::readStandardFrame(QXmlStreamReader &xml)
 void Skin::readScript(QXmlStreamReader &xml)
 {
     QXmlStreamAttributes attributes = xml.attributes();
-    //QString id = attributes.value("id").toString();
 
     Script *s = new Script(attributes, m_curParent.top());
     mCDebug(MODERNUI_XML_PARSER) << "\t" << s << " parent: " << m_curParent.top();
@@ -506,16 +496,11 @@ const QMap<QString, void (Skin::*)(QXmlStreamReader &xml)> Skin::m_readFuncs {
         {"script", &Skin::readScript},
         {"include", &Skin::readInclude}};
 
-inline bool Skin::isSkinInfoTag(const QString &name) const
-{
-    return std::binary_search(m_validSkininfo.begin(), m_validSkininfo.end(), name);
-}
-
-const QStringList Skin::m_validSkininfo {
-    {"author"},
-    {"comment"},
-    {"email"},
-    {"homepage"},
-    {"name"},
-    {"screenshot"},
-    {"version"}};
+const QMap<QString, Skin::SkinInfo> Skin::m_validSkinInfo {
+    {"author", Skin::Author},
+    {"comment", Skin::Comment},
+    {"email", Skin::Email},
+    {"homepage", Skin::HomePage},
+    {"name", Skin::Name},
+    {"screenshot", Skin::Screenshot},
+    {"version", Skin::Version}};

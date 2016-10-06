@@ -48,9 +48,20 @@ public:
     explicit Skin(QWidget *parent = 0);
     virtual ~Skin() {}
 
+    enum SkinInfo {
+        Author = 0,
+        Comment,
+        Email,
+        HomePage,
+        Name,
+        Screenshot,
+        Version,
+    };
+
     static Skin *instance();
     void setSkin(const QString &path);
     QString skinPath() const;
+    QString skinInfo(SkinInfo key) const;
     const QString findFile(const QString &name);
 
     void showUi();
@@ -75,9 +86,8 @@ private:
     QDir m_includeDir;
     QString m_wxmlVer;
 
-    QMap<QString, QString> m_skinInfo;
-    static const QStringList m_validSkininfo;
-    inline bool isSkinInfoTag(const QString &name) const;
+    QMap<SkinInfo, QString> m_skinInfo;
+    static const QMap<QString, Skin::SkinInfo> m_validSkinInfo;
 
     QList<Script *> m_scripts;
 

@@ -65,8 +65,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_uiSettings = QmmpUiSettings::instance();
 
     m_interpreter = new Interpreter(this);
-    m_system = new System(this);
     m_skin = new Skin(this);
+    m_system = new System(this);
 
     //connect(m_uiHelper, SIGNAL(showMainWindowCalled()), SLOT(showAndRaise()));
     //connect(m_uiHelper, SIGNAL(toggleVisibilityCalled()), SLOT(toggleVisibility()));
