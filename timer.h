@@ -27,6 +27,7 @@ public:
 
     Q_INVOKABLE void start();
     Q_INVOKABLE void stop();
+    Q_INVOKABLE int delay() const;
     Q_INVOKABLE void setDelay(int value);
 
 signals:

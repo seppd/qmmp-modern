@@ -800,6 +800,7 @@ const QMap<QString, QString> Interpreter::m_methodNames {
     // Timer
     {"start", "start"},
     {"stop", "stop"},
+    {"getdelay", "delay"},
     {"setdelay", "setDelay"},
     {"ontimer", "timeout"},
 

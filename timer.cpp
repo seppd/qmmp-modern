@@ -27,6 +27,11 @@ void Timer::stop()
     m_timer->stop();
 }
 
+int Timer::delay() const
+{
+    return m_timer->interval();
+}
+
 void Timer::setDelay(int value)
 {
     m_timer->setInterval(value);
