@@ -11,6 +11,8 @@
 #include <QMessageBox>
 #include <QMetaEnum>
 
+#include <cmath>
+
 #include <qmmpui/mediaplayer.h>
 #include <qmmpui/uihelper.h>
 #include <qmmpui/playlistmanager.h>
@@ -258,6 +260,17 @@ void System::setPrivateString(QString section, QString key, QString value)
     QSettings settings(Qmmp::configFile(), QSettings::IniFormat);
     QString entry = QString("Modern/skin_%1_%2_%3").arg(m_skin->skinInfo(Skin::Name)).arg(section).arg(key);
     settings.setValue(entry, value);
+}
+
+int System::integer(double value)
+{
+    return qRound(value);
+}
+
+double System::fraction(double value)
+{
+    double tmp;
+    return modf(value, &tmp);
 }
 
 int System::stringLength(const QString &string)

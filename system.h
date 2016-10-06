@@ -93,6 +93,8 @@ public:
     Q_INVOKABLE QString privateString(QString section, QString key, QString defaultValue) const;
     Q_INVOKABLE void setPrivateString(QString section, QString key, QString value);
 
+    Q_INVOKABLE static int integer(double value);
+    Q_INVOKABLE static double fraction(double value);
     Q_INVOKABLE static int stringLength(const QString &string);
     Q_INVOKABLE static QString stringUpper(const QString &string);
     Q_INVOKABLE static QString stringLower(const QString &string);

@@ -762,6 +762,8 @@ const QMap<QString, QString> Interpreter::m_methodNames {
     {"getvolume", "volume"},
     {"setvolume", "setVolume"},
     {"onvolumechanged", "volumeChanged"},
+    {"integer", "integer"},
+    {"frac", "fraction"},
     {"strlen", "stringLength"},
     {"strupper", "stringUpper"},
     {"strlower", "stringLower"},
