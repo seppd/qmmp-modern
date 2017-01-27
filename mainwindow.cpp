@@ -9,16 +9,7 @@
 
 #include <qmmp/soundcore.h>
 #include <qmmp/visual.h>
-#include <qmmp/metadatamanager.h>
 #include <qmmpui/uihelper.h>
-#include <qmmpui/general.h>
-#include <qmmpui/playlistparser.h>
-#include <qmmpui/playlistformat.h>
-#include <qmmpui/commandlinemanager.h>
-#include <qmmpui/filedialog.h>
-#include <qmmpui/playlistmodel.h>
-#include <qmmpui/playlistmanager.h>
-#include <qmmpui/configdialog.h>
 #include <qmmpui/qmmpuisettings.h>
 
 #include "mainwindow.h"
@@ -67,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_interpreter = new Interpreter(this);
     m_skin = new Skin(this);
     m_system = new System(this);
+
+    Visual::initialize(this, Q_NULLPTR, Q_NULLPTR);
 
     //connect(m_uiHelper, SIGNAL(showMainWindowCalled()), SLOT(showAndRaise()));
     //connect(m_uiHelper, SIGNAL(toggleVisibilityCalled()), SLOT(toggleVisibility()));

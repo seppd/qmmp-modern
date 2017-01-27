@@ -27,6 +27,7 @@
 #include "bitmapfont.h"
 #include "bitmap.h"
 #include "animatedlayer.h"
+#include "visualizer.h"
 #include "script.h"
 #include "interpreter.h"
 #include "dock.h"
@@ -373,7 +374,10 @@ void Skin::readText(QXmlStreamReader &xml)
 
 void Skin::readVis(QXmlStreamReader &xml)
 {
+    QXmlStreamAttributes attributes = xml.attributes();
 
+    Visualizer *v = new Visualizer(attributes, m_curParent.top());
+    mCDebug(MODERNUI_XML_PARSER) << "\t" << v << " parent: " << m_curParent.top();
 }
 
 void Skin::readColor(QXmlStreamReader &xml)

@@ -25,7 +25,6 @@ SOURCES +=\
     timer.cpp \
     componentbucket.cpp \
     edit.cpp \
-    vis.cpp \
     browser.cpp \
     eqvis.cpp \
     status.cpp \
@@ -45,7 +44,9 @@ SOURCES +=\
     modernfactory.cpp \
     dock.cpp \
     skinreader.cpp \
-    windowholder.cpp
+    windowholder.cpp \
+    visualizer.cpp \
+    fft.c
 
 HEADERS  += mainwindow.h \
     debug.h \
@@ -70,7 +71,6 @@ HEADERS  += mainwindow.h \
     timer.h \
     componentbucket.h \
     edit.h \
-    vis.h \
     browser.h \
     eqvis.h \
     status.h \
@@ -92,7 +92,9 @@ HEADERS  += mainwindow.h \
     dock.h \
     skinreader.h \
     bitmapstorage.h \
-    windowholder.h
+    windowholder.h \
+    visualizer.h \
+    fft.h
 
 TARGET = qmmp-modern
 TEMPLATE = lib

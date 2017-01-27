@@ -39,7 +39,7 @@ class Color;
 class Script;
 class Dock;
 
-struct Bitmap;
+class Bitmap;
 
 class Skin : public QWidget
 {
