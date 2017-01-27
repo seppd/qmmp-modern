@@ -108,6 +108,8 @@ public:
     Cursor cursor() const;
     void setCursor(Cursor cursor);
 
+    void setToolTip(const QString &text);
+
     bool moveFlag() const;
     void setMoveFlag(bool enable);
 

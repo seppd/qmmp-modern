@@ -136,6 +136,15 @@ void GuiObject::setCursor(Cursor cursor)
     update();
 }
 
+void GuiObject::setToolTip(const QString &text)
+{
+    if (toolTip() == text)
+        return;
+
+    QString tt = text;
+    QWidget::setToolTip(tt.replace("winamp", "Qmmp", Qt::CaseInsensitive));
+}
+
 void GuiObject::setMoveFlag(bool enable)
 {
     m_moveFlag = enable;
