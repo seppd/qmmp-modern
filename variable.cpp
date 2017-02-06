@@ -49,7 +49,7 @@ Variable &Variable::operator=(const Variable &other)
 
     if (!m_pendingConnections.empty()) {
         Interpreter *interpreter = Interpreter::instance();
-        for (Callback *callback : m_pendingConnections) {
+        Q_FOREACH (Callback *callback, m_pendingConnections) {
             //qDebug() << "connect pending" << callback->function()->name();
             interpreter->connectCallback(*this, callback);
         }

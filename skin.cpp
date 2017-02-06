@@ -136,7 +136,7 @@ void Skin::showUi()
     if (main == Q_NULLPTR)
         qFatal("%s: main container not found", Q_FUNC_INFO);
 
-    for (QString id : m_containers.keys()) {
+    Q_FOREACH (const QString &id, m_containers.keys()) {
         Container *c = m_containers.value(id);
         if (c->defaultVisible()) {
             qInfo() << c->parent() << c->objectName() << c->windowFlags();
@@ -195,7 +195,7 @@ void Skin::readSkinInfo(QXmlStreamReader &xml)
         xml.readNext();
     }
 
-    for (auto i : m_skinInfo.keys())
+    Q_FOREACH (const SkinInfo &i, m_skinInfo.keys())
         mCDebug(MODERNUI_XML_PARSER) << "\t" << i << "=" << m_skinInfo.value(i);
 }
 
@@ -332,7 +332,7 @@ void Skin::readGroup(QXmlStreamReader &xml)
         g->setParent(m_curParent.top());
         mCDebug(MODERNUI_XML_PARSER) << "\t" << g << " parent: " << m_curParent.top();
         QString name, value;
-        for (QXmlStreamAttribute i : attributes) {
+        Q_FOREACH (const QXmlStreamAttribute &i, attributes) {
             name = i.name().toString().toLower();
             value = i.value().toString();
             if (!g->setProperty(qPrintable(name), QVariant(value))) {

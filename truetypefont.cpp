@@ -16,7 +16,7 @@
 TrueTypeFont::TrueTypeFont(const QXmlStreamAttributes &attributes, QObject *parent) : QObject(parent)
 {
     QString name, value;
-    for (QXmlStreamAttribute i : attributes) {
+    Q_FOREACH (const QXmlStreamAttribute &i, attributes) {
         name = i.name().toString().toLower();
         value = i.value().toString();
         if (!setProperty(qPrintable(name), QVariant(value))) {
@@ -40,7 +40,7 @@ void TrueTypeFont::setFile(const QString &file)
     m_fontId = id;
     m_file = file;
 #if 0
-    for (QString s : QFontDatabase::applicationFontFamilies(m_fontid))
+    Q_FOREACH (const QString &s, QFontDatabase::applicationFontFamilies(m_fontId))
         qDebug("%s", qUtf8Printable(s));
 #endif
 }

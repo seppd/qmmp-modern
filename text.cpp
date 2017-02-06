@@ -36,7 +36,7 @@ Text::Text(const QXmlStreamAttributes &attributes, QWidget *parent) : GuiObject(
     m_effect = new QGraphicsDropShadowEffect(this);
     m_effect->setOffset(0, 0);
     QString name, value;
-    for (QXmlStreamAttribute i : attributes) {
+    Q_FOREACH (const QXmlStreamAttribute &i, attributes) {
         name = i.name().toString().toLower();
         value = i.value().toString();
         if (name == "display" || name == "align" || name == "valign")

@@ -31,7 +31,7 @@ Button::Button(const QXmlStreamAttributes &attributes, QWidget *parent) : GuiObj
     m_system = System::instance();
     m_storage = new BitmapStorage<ButtonElement>(TotalElements);
     QString name, value;
-    for (QXmlStreamAttribute i : attributes) {
+    Q_FOREACH (const QXmlStreamAttribute &i, attributes) {
         name = i.name().toString().toLower();
         value = i.value().toString();
         if (name == "action")

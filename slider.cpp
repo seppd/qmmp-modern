@@ -23,7 +23,7 @@ Slider::Slider(const QXmlStreamAttributes &attributes, QWidget *parent) : GuiObj
     m_core = SoundCore::instance();
     m_storage = new BitmapStorage<SliderElement>(TotalElements);
     QString name, value;
-    for (QXmlStreamAttribute i : attributes) {
+    Q_FOREACH (const QXmlStreamAttribute &i, attributes) {
         name = i.name().toString().toLower();
         value = i.value().toString();
         if (name == "action")

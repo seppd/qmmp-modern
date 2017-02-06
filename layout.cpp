@@ -12,7 +12,7 @@
 Layout::Layout(const QXmlStreamAttributes &attributes, QWidget *parent) : Group(parent)
 {
     QString name, value;
-    for (QXmlStreamAttribute i : attributes) {
+    Q_FOREACH (const QXmlStreamAttribute &i, attributes) {
         name = i.name().toString().toLower();
         value = i.value().toString();
         if (!setProperty(qPrintable(name), QVariant(value))) {

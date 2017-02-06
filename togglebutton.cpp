@@ -19,7 +19,7 @@ ToggleButton::ToggleButton(const QXmlStreamAttributes &attributes, QWidget *pare
 {
     m_storage = new BitmapStorage<ToggleButtonElement>(TotalElements);
     QString name, value;
-    for (QXmlStreamAttribute i : attributes) {
+    Q_FOREACH (const QXmlStreamAttribute &i, attributes) {
         name = i.name().toString().toLower();
         value = i.value().toString();
         if (name == "action")
