@@ -18,6 +18,7 @@
 
 #include <QXmlStreamAttributes>
 #include <QTimer>
+#include <QSize>
 
 #include <qmmp/visual.h>
 
@@ -53,14 +54,16 @@ private:
 class Scope : public VisualizerBase
 {
 public:
-    Scope();
-    ~Scope() {}
+    Scope(int width, int height);
+    ~Scope();
     void clear();
     bool process(float *l, const Visualizer * const v);
     void draw(QPainter *p, const Visualizer * const v);
 
 private:
-    int m_internVisData[76];
+    int m_width;
+    int m_height;
+    int *m_internVisData;
     int m_ratio = 1;
 };
 
@@ -286,7 +289,7 @@ private:
     int m_channel = Stereo;
     bool m_hFlip = false;
     bool m_vFlip = false;
-    Mode m_mode = Spectroscope;
+    Mode m_mode = Oscilloscope;
     bool m_peaks = false;
     int m_peakFallOffSpeed = Speed2;
     double m_peakFallOff = 0.2;

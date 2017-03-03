@@ -26,6 +26,7 @@
 
 #define VISUAL_NODE_SIZE 512 //samples
 #define VISUAL_BUFFER_SIZE (5 * VISUAL_NODE_SIZE)
+#define OSC_COLORS_NUM 5.0
 
 Visualizer::Visualizer(const QXmlStreamAttributes &attributes, QWidget *parent) : GuiObject(parent)
 {
@@ -41,13 +42,14 @@ Visualizer::Visualizer(const QXmlStreamAttributes &attributes, QWidget *parent) 
             qWarning("%s: failed to set '%s' to '%s'", Q_FUNC_INFO, qUtf8Printable(name), qUtf8Printable(value));
         }
     }
+
     // Temp
-    m_vis = new Analyzer;
+    m_vis = new Scope(w(), h());
 
     m_pixmap = QPixmap(w(), h());
     m_stream = new VisualDataStream(this);
     connect(m_stream, SIGNAL(dataReady()), this, SLOT(visualize()), Qt::DirectConnection);
-    Visual::add(m_stream);       
+    Visual::add(m_stream);
 }
 
 QString Visualizer::colorAllBands() const
@@ -699,45 +701,62 @@ void Analyzer::draw(QPainter *p, const Visualizer * const v)
     }
 }
 
-Scope::Scope()
+Scope::Scope(int width, int height) : m_width(width), m_height(height)
 {
+    m_internVisData = new int[m_width];
     clear();
+}
+
+Scope::~Scope()
+{
+    delete [] m_internVisData;
 }
 
 void Scope::clear()
 {
-    for (int i = 0; i < 76; ++i)
-        m_internVisData[i] = 5;
+    for (int i = 0; i < m_width; ++i)
+        m_internVisData[i] = m_height / 2;
 }
 
 bool Scope::process(float *l, const Visualizer * const v)
 {
     Q_UNUSED(v);
-    int step = (VISUAL_NODE_SIZE << 8) / 76;
+    int step = (VISUAL_NODE_SIZE << 8) / m_width;
     int pos = 0;
 
-    for (int i = 0; i < 76; ++i) {
+    for (int i = 0; i < m_width; ++i) {
         pos += step;
-        m_internVisData[i] = int(l[pos >> 8] * 8.0);
-        m_internVisData[i] = qBound(-4, m_internVisData[i], 4);
+        m_internVisData[i] = static_cast<int>(l[pos >> 8] * m_height);
+        m_internVisData[i] = qBound(-m_height / 2, m_internVisData[i], m_height / 2);
     }
     return true;
 }
 
 void Scope::draw(QPainter *p, const Visualizer * const v)
 {
-    for (int i = 0; i < 75; ++i) {
-        int h1 = 8 - m_internVisData[i];
-        int h2 = 8 - m_internVisData[i + 1];
-        if (h1 > h2)
-            qSwap(h1, h2);
-        p->setPen(v->m_colorOscs[qAbs(8 - h2)]);
-        if (v->m_oscstyle == Visualizer::SOLID)
+    int half = m_height / 2;
+    float weight = (OSC_COLORS_NUM - 1) / half;
+    if (v->m_oscstyle == Visualizer::SOLID) {
+        for (int i = 0; i < m_width - 1; ++i) {
+            int h1 = half - m_internVisData[i];
+            int h2 = half - m_internVisData[i + 1];
+            if (h1 > h2)
+                std::swap(h1, h2);
+            p->setPen(v->m_colorOscs[qRound(weight * qAbs(half - h2))]);
             p->drawLine(i * m_ratio, h1 * m_ratio, (i + 1) * m_ratio, h2 * m_ratio);
-        else if (v->m_oscstyle == Visualizer::DOTS)
-            p->drawPoint(i * m_ratio, h1 * m_ratio);
-        else
-            p->drawLine(i * m_ratio, h1 * m_ratio, (i + 1) * m_ratio, h2 * m_ratio);
+        }
+    } else if (v->m_oscstyle == Visualizer::DOTS) {
+        for (int i = 0; i < m_width; ++i) {
+            int h = half - m_internVisData[i];
+            p->setPen(v->m_colorOscs[qRound(weight * qAbs(m_internVisData[i]))]);
+            p->drawPoint(i * m_ratio, h * m_ratio);
+        }
+    } else {
+        for (int i = 0; i < m_width; ++i) {
+            int h = half - m_internVisData[i];
+            p->setPen(v->m_colorOscs[qRound(weight * qAbs(m_internVisData[i]))]);
+            p->drawLine(i * m_ratio, half, i * m_ratio, h);
+        }
     }
-    memset(m_internVisData, 0, sizeof(m_internVisData));
+    memset(m_internVisData, 0, sizeof(int) * m_width);
 }
